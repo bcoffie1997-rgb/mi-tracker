@@ -168,3 +168,140 @@ export const ACTIVE_PIPELINE_STATUSES: Status[] = [
   "Proposal Sent",
   "Negotiating",
 ];
+
+// ──────────────────────────────────────────────────────────────────────────
+// Outreach / email follow-up
+// ──────────────────────────────────────────────────────────────────────────
+
+export interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  body: string;
+  // 0 = initial cold email; 1+ = follow-up steps in a sequence
+  step: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SequenceStep {
+  offsetDays: number;   // days after the prior step (or after first send for step 0)
+  templateId: string;
+}
+
+export interface Sequence {
+  id: string;
+  name: string;
+  steps: SequenceStep[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SentMessage {
+  id: string;
+  contactId: string;
+  sequenceId?: string;
+  templateId?: string;
+  step: number;              // 0 = initial, 1+ = follow-up
+  subject: string;
+  body: string;              // full body as sent
+  bodyPreview: string;       // first ~200 chars for list views
+  sentAt: string;            // ISO date string
+  // Filled in once Gmail integration is wired up — optional for now
+  gmailMessageId?: string;
+  gmailThreadId?: string;
+  rfc822MessageId?: string;
+  // Reply tracking (for now, set manually via "Log reply"; later via Gmail sync)
+  replied: boolean;
+  lastReplyAt?: string;
+  lastReplySnippet?: string;
+}
+
+// Statuses where sequenced follow-ups should keep firing.
+// If a contact lands outside this set, the sequence is considered "stopped".
+export const SEQUENCE_ACTIVE_STATUSES: Status[] = [
+  "Outreach Sent",
+];
+
+// Default starter templates — seeded on first load so the dashboard isn't empty.
+export const DEFAULT_TEMPLATES: EmailTemplate[] = [
+  {
+    id: "tmpl-initial",
+    name: "Initial outreach",
+    step: 0,
+    subject: "MI partnership for {{organization}}",
+    body:
+      "Hi {{firstName}},\n\n" +
+      "{{outreachHook}}\n\n" +
+      "I lead enterprise partnerships at Market Assassin — we help organizations like {{organization}} surface federal contracting intel for the small businesses you serve. " +
+      "Would you be open to a 20-minute call to compare notes on what your team is seeing?\n\n" +
+      "Best,\n{{senderName}}",
+    createdAt: "",
+    updatedAt: "",
+  },
+  {
+    id: "tmpl-bump-1",
+    name: "Follow-up 1 — soft bump",
+    step: 1,
+    subject: "Re: MI partnership for {{organization}}",
+    body:
+      "Hi {{firstName}},\n\n" +
+      "Floating this back to the top of your inbox in case it got buried. Happy to send a short loom instead of a call if that's easier.\n\n" +
+      "Best,\n{{senderName}}",
+    createdAt: "",
+    updatedAt: "",
+  },
+  {
+    id: "tmpl-bump-2",
+    name: "Follow-up 2 — value-add",
+    step: 2,
+    subject: "Re: MI partnership for {{organization}}",
+    body:
+      "Hi {{firstName}},\n\n" +
+      "One more nudge — we just published a breakdown of FY26 set-aside trends for the categories your clients work in. Happy to share it directly, no strings.\n\n" +
+      "Worth a quick chat?\n\n" +
+      "Best,\n{{senderName}}",
+    createdAt: "",
+    updatedAt: "",
+  },
+  {
+    id: "tmpl-breakup",
+    name: "Follow-up 3 — breakup",
+    step: 3,
+    subject: "Re: MI partnership for {{organization}}",
+    body:
+      "Hi {{firstName}},\n\n" +
+      "Looks like the timing isn't right — I'll stop reaching out for now. If anything changes on your end, my door is open.\n\n" +
+      "Best,\n{{senderName}}",
+    createdAt: "",
+    updatedAt: "",
+  },
+];
+
+export const DEFAULT_SEQUENCES: Sequence[] = [
+  {
+    id: "seq-default",
+    name: "Default 4-touch (0 / +3 / +7 / +14)",
+    steps: [
+      { offsetDays: 0,  templateId: "tmpl-initial" },
+      { offsetDays: 3,  templateId: "tmpl-bump-1" },
+      { offsetDays: 4,  templateId: "tmpl-bump-2"  }, // +7 from start
+      { offsetDays: 7,  templateId: "tmpl-breakup" }, // +14 from start
+    ],
+    createdAt: "",
+    updatedAt: "",
+  },
+];
+
+// Available merge fields, used by the template editor's "Insert field" menu.
+export const MERGE_FIELDS = [
+  "firstName",
+  "lastName",
+  "contactName",
+  "organization",
+  "subOrg",
+  "title",
+  "outreachHook",
+  "senderName",
+] as const;
+export type MergeField = (typeof MERGE_FIELDS)[number];

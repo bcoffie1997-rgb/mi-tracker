@@ -71,3 +71,27 @@ export const FileText = (p: IconProps) => (
 export const ArrowUpRight = (p: IconProps) => (
   <svg {...base(p)}><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
 );
+export const Send = (p: IconProps) => (
+  <svg {...base(p)}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+);
+export const Inbox = (p: IconProps) => (
+  <svg {...base(p)}><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+);
+export const Reply = (p: IconProps) => (
+  <svg {...base(p)}><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+);
+export const Check = (p: IconProps) => (
+  <svg {...base(p)}><polyline points="20 6 9 17 4 12"/></svg>
+);
+export const Copy = (p: IconProps) => (
+  <svg {...base(p)}><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+);
+export const Calendar = (p: IconProps) => (
+  <svg {...base(p)}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+);
+export const Zap = (p: IconProps) => (
+  <svg {...base(p)}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+);
+export const SkipForward = (p: IconProps) => (
+  <svg {...base(p)}><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+);
