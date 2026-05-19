@@ -1,0 +1,44 @@
+[
+  {
+    "hash": "9133dae",
+    "author": "kkii",
+    "date": "2026-05-18T17:42:58-04:00",
+    "subject": "add outreach dashboard with templates, sequences, and sent-message tracking",
+    "body": "New /outreach route surfaces a follow-up queue (overdue / due today / upcoming),\na sent-message log with reply tracking, and editors for templates and sequence\ncadence. Email sending is currently stubbed via \"Open in Gmail\" (compose URL)\nplus \"Log as sent\" so the dashboard is useful before OAuth-based sending lands.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "34792e9",
+    "author": "kkii",
+    "date": "2026-05-18T17:05:37-04:00",
+    "subject": "add MBDA research and full-text VBOC/SBDC source files",
+    "body": "Adds the original full-length research markdown files at the repo\nroot. Note: vboc-contacts-may2026.md and sbdc-contacts-may2026.md\nduplicate the condensed copies already at research/<same-name>.md\n(those condensed versions remain in place). mbda-contacts-may2026.md\nis new research; the ~35 MBDA Business Center contacts have NOT been\nparsed into lib/seed.ts.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "89fa710",
+    "author": "kkii",
+    "date": "2026-05-18T16:58:35-04:00",
+    "subject": "add SBDC state directors from May 2026 research",
+    "body": "Append 63 SBDC state/territory directors (e-117 through e-179)\ncovering all 10 SBA regions. Includes 4 Texas regional + 5 California\nregional leads since neither state has a single statewide SBDC head.\nExisting ASBDC HQ entries (e-010 Rowe, e-011 Youngblut, e-012\nThibodeau) untouched.\n\nNotable design: Byron Hicks (ASBDC 2025-2026 Board Chair) added as\nparallel SBDC entry e-138, alongside existing APEX entry e-059 — same\nperson, two filterable program rows for the SBDC+APEX dual program he\nruns at NC SBTDC. Tiffany Ford added as her own e-161 SBDC entry\n(previously only referenced in e-089 ND APEX notes); she runs the\ntriple-program at UND (SBDC + APEX + VBOC).\n\nTiers: 21 Tier 1 (ASBDC Board officers + large-state SBDCs +\nco-located APEX cross-sells at UA/UWF/IL DCEO/IEDC/MSU MI/OH Dept of\nDev/Kutztown/GMU/UMD/UH/UTSA/Texas Tech/Maricopa/UNO/UND/Boise State\n+ LA Regional). 29 Tier 2 standard states. 13 Tier 3 small\nstates/territories.\n\n18 co-located APEX+SBDC cross-sell accounts flagged in notes with\nmatching APEX entry IDs for outreach pairing.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "0314eb8",
+    "author": "kkii",
+    "date": "2026-05-18T16:47:52-04:00",
+    "subject": "add VBOC contacts from May 2026 research",
+    "body": "Append 20 nationwide VBOC contacts (e-097 through e-116) covering all\n10 SBA regions. Update e-014 in place (McNulty Center → Arsenal\nBusiness and Technology Partnership rename, same Amy Amoroso, coverage\nexpanded to NJ/NY/PR/USVI). Update e-015 in place (added T.C. Bryant\nas director, verified email/phone, coverage expanded to KY/NC/SC,\nbumped to Tier 1 for Fort Liberty proximity).\n\nTiers: 10 Tier 1 (co-located APEX+VBOC cross-sells at ODU/UTA/UND/\nBig Sky EDA/MS State, plus high-profile leaders like Wendy Baumann,\nplus large mil clusters), 9 Tier 2 standard, 1 Tier 3 (Pacific\nterritories). Cross-sell hooks captured for 5 co-located APEX+VBOC\naccounts.\n\nFlagged: possible overlap between e-016 (Horstman/Georgia Southern)\nand new e-103 (VECTR Center). Skipped existing e-013 (SC Citadel).\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "7de5d45",
+    "author": "kkii",
+    "date": "2026-05-18T16:40:10-04:00",
+    "subject": "add APEX contacts from May 2026 research",
+    "body": "Append 68 nationwide APEX Accelerator contacts (e-029 through e-096)\nto the seed array, sourced from research/apex-contacts-may2026.md.\nSkips 6 existing duplicates (Beasley, Thomas, Dixon, VA/GMU, Berman,\nCarrier). Tiers: 10 Tier 1 (NAPEX officers + FL/OH/TX/IN/KY/MI/NYC),\n40 Tier 2 (standard states + OH sub-centers + tribal multi-state),\n18 Tier 3 (territories + small states). High-priority transition\nhooks captured in notes (Idaho host change, Maine new director,\nEmpire NY promotion, MA recompete, Montana interim, NYC SBS new ED).\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "df7f04b",
+    "author": "kkii",
+    "date": "2026-05-18T15:55:56-04:00",
+    "subject": "first commit",
+    "body": ""
+  }
+]

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Download, Upload, Trash } from "@/components/Icons";
 import { exportData, importData, resetToSeed, loadContacts } from "@/lib/storage";
 
-type Page = "board" | "outreach";
+type Page = "board" | "outreach" | "changelog";
 
 interface TopBarProps {
   activePage: Page;
@@ -16,8 +16,9 @@ interface TopBarProps {
 }
 
 const NAV: { key: Page; label: string; href: string }[] = [
-  { key: "board",    label: "Board",    href: "/" },
-  { key: "outreach", label: "Outreach", href: "/outreach" },
+  { key: "board",     label: "Tracking",  href: "/" },
+  { key: "outreach",  label: "Outreach",  href: "/outreach" },
+  { key: "changelog", label: "Changelog", href: "/changelog" },
 ];
 
 export function TopBar({ activePage, actions, onDataReplaced }: TopBarProps) {
