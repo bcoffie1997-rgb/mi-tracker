@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Download, Upload, Trash } from "@/components/Icons";
 import { exportData, importData, resetToSeed, loadContacts } from "@/lib/storage";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Page = "board" | "outreach" | "changelog";
 
@@ -102,6 +103,8 @@ export function TopBar({ activePage, actions, onDataReplaced }: TopBarProps) {
 
           <div className="ml-auto flex items-center gap-2">
             {actions}
+
+            <ThemeToggle />
 
             <div className="relative">
               <button

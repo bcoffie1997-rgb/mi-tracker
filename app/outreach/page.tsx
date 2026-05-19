@@ -110,8 +110,8 @@ export default function OutreachPage() {
         {/* Page intro */}
         <div className="mb-5 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <h2 className="serif-display text-3xl font-medium tracking-tighter text-ink leading-tight">
-              Outreach.
+            <h2 className="serif-display text-2xl font-semibold tracking-tighter text-ink leading-tight">
+              Outreach
             </h2>
             <p className="text-[13px] text-ink-muted mt-1 max-w-2xl">
               Manage your sequenced follow-ups. The Queue surfaces who's due next;

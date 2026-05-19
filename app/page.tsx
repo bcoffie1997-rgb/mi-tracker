@@ -128,8 +128,8 @@ export default function HomePage() {
       <div className="max-w-[1400px] mx-auto px-6 py-5">
         {/* Page intro */}
         <div className="mb-5">
-          <h2 className="serif-display text-3xl font-medium tracking-tighter text-ink leading-tight">
-            Pipeline.
+          <h2 className="serif-display text-2xl font-semibold tracking-tighter text-ink leading-tight">
+            Pipeline
           </h2>
           <p className="text-[13px] text-ink-muted mt-1 max-w-2xl">
             Drag cards between columns to update status. Click any card to open details.

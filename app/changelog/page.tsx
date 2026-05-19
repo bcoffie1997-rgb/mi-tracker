@@ -12,8 +12,8 @@ export default function ChangelogPage() {
 
       <div className="max-w-[1100px] mx-auto px-6 py-5">
         <div className="mb-6">
-          <h2 className="serif-display text-3xl font-medium tracking-tighter text-ink leading-tight">
-            What's new.
+          <h2 className="serif-display text-2xl font-semibold tracking-tighter text-ink leading-tight">
+            What's new
           </h2>
           <p className="text-[13px] text-ink-muted mt-1 max-w-2xl">
             Every change shipped to the tracker, freshest first. Generated from

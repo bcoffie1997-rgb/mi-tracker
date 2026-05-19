@@ -101,24 +101,24 @@ export const BOARD_COLUMNS: Status[] = [
 
 // Status -> visual indicator color
 export const STATUS_COLORS: Record<Status, string> = {
-  "Not Started":    "#9BA3AE",
-  "Researching":    "#5C7BA8",
-  "Outreach Sent":  "#C9A75A",
-  "Responded":      "#D88A5B",
-  "Discovery Call": "#3A5F8A",
-  "Pilot Active":   "#5C7355",
-  "Proposal Sent":  "#1F3A5F",
-  "Negotiating":    "#9C7A2E",
-  "Closed Won":     "#3D7A4B",
-  "Closed Lost":    "#A0392E",
-  "Nurture":        "#7B8FA8",
+  "Not Started":    "#A1A1AA", // zinc-400
+  "Researching":    "#60A5FA", // blue-400
+  "Outreach Sent":  "#FBBF24", // amber-400
+  "Responded":      "#FB923C", // orange-400
+  "Discovery Call": "#6366F1", // indigo-500
+  "Pilot Active":   "#06B6D4", // cyan-500
+  "Proposal Sent":  "#8B5CF6", // violet-500
+  "Negotiating":    "#F59E0B", // amber-500
+  "Closed Won":     "#10B981", // emerald-500
+  "Closed Lost":    "#EF4444", // red-500
+  "Nurture":        "#94A3B8", // slate-400
 };
 
 export const TIER_COLORS: Record<Tier, string> = {
-  "Tier 1":  "#3D7A4B",
-  "Tier 2":  "#9C7A2E",
-  "Tier 3":  "#A0522D",
-  "Channel": "#3A5F8A",
+  "Tier 1":  "#10B981", // emerald
+  "Tier 2":  "#F59E0B", // amber
+  "Tier 3":  "#EF4444", // red
+  "Channel": "#6366F1", // indigo
 };
 
 export const CATEGORIES: Category[] = [
