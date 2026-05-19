@@ -1,5 +1,33 @@
 [
   {
+    "hash": "04b5bfe",
+    "author": "kkii",
+    "date": "2026-05-19T10:41:06-04:00",
+    "subject": "redesign UI to modern-tech aesthetic with light + dark mode",
+    "body": "Drops the editorial-paper visual language (Fraunces serif, warm gold/rust/\nsage palette, paper-grain noise overlay, period flourishes on page titles)\nfor a Linear/Vercel-style modern-tech look: Geist sans throughout, cool\nzinc + indigo palette, brighter saturated status hues.\n\nDark mode is wired via Tailwind's `class` strategy backed by CSS variables\nholding rgb triples — every existing `text-ink` / `bg-paper-card` /\n`border-ink/10` utility re-themes automatically, no per-component edits.\nThemeToggle in the TopBar persists the choice (mi-tracker:theme:v1) and\nrespects prefers-color-scheme on first visit. An inline boot script in\napp/layout.tsx applies the theme class before React hydrates to avoid\nflash-of-wrong-theme.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "d36e503",
+    "author": "kkii",
+    "date": "2026-05-19T08:43:18-04:00",
+    "subject": "add Kanban / Table / Grouped view switcher to Tracking page",
+    "body": "Three lenses on the same filtered contact list, all opening the same\nContactDetail panel on click. Table view is a sortable spreadsheet with\n9 columns (click headers to sort, click again to flip direction). Grouped\nview is collapsible sections defaulting to Category, with Tier and Owner\nas alternate group-by axes. View choice persists in localStorage under\nmi-tracker:view:v1. FilterBar still applies across every view.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "8b2fa6f",
+    "author": "kkii",
+    "date": "2026-05-19T08:32:26-04:00",
+    "subject": "backfill email / phone / LinkedIn for 12 Tier 1 APEX contacts",
+    "body": "Filled contactability gaps on top-tier NAPEX leadership and state APEX\ndirectors where the previous seed had blank email/phone fields. 12 emails\nadded, 11 phones, 4 LinkedIn URLs. Three contacts use org-level program\ninboxes (empireapex@nystec.com, kyapex@kstc.com, apex@schoolcraft.edu)\nwhere personal addresses are not publicly published — fine for first\ntouch, swap to direct on reply. Scott Jensen (NVSBC, e-008) intentionally\nleft blank: no public email or phone, contact via website form or LinkedIn.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "d382d67",
+    "author": "kkii",
+    "date": "2026-05-19T08:32:15-04:00",
+    "subject": "add /changelog route generated from git log",
+    "body": "New top-nav tab renders every commit as a date-grouped timeline with auto-\ndetected type chips (Add / Fix / Update / etc.), search, and trailer stripping\nfor Co-Authored-By lines. Entries come from lib/changelog.generated.json,\nwhich scripts/generate-changelog.mjs writes from `git log --no-merges` at\nprebuild/predev time. Also renames the Board nav label to \"Tracking\".\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
     "hash": "9133dae",
     "author": "kkii",
     "date": "2026-05-18T17:42:58-04:00",
