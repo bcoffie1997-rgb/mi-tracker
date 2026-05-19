@@ -15,7 +15,11 @@ const TEMPLATES_KEY = "mi-tracker:templates:v1";
 const SEQUENCES_KEY = "mi-tracker:sequences:v1";
 const MESSAGES_KEY  = "mi-tracker:messages:v1";
 const SENDER_KEY    = "mi-tracker:sender:v1";
+const VIEW_KEY      = "mi-tracker:view:v1";
 const SEEDED_FLAG   = "mi-tracker:seeded:v1";
+
+export type ViewMode = "kanban" | "table" | "grouped";
+const DEFAULT_VIEW: ViewMode = "kanban";
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -163,6 +167,20 @@ export function loadSenderName(): string {
 export function saveSenderName(name: string): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(SENDER_KEY, name);
+}
+
+// ── Tracking-page view mode (kanban / table / grouped) ────────────────────
+
+export function loadViewMode(): ViewMode {
+  if (typeof window === "undefined") return DEFAULT_VIEW;
+  const raw = localStorage.getItem(VIEW_KEY);
+  if (raw === "kanban" || raw === "table" || raw === "grouped") return raw;
+  return DEFAULT_VIEW;
+}
+
+export function saveViewMode(mode: ViewMode): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(VIEW_KEY, mode);
 }
 
 // ── Export / import / reset ───────────────────────────────────────────────

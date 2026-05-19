@@ -2,8 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Contact, Status } from "@/lib/types";
-import { loadContacts, saveContacts } from "@/lib/storage";
+import {
+  loadContacts,
+  saveContacts,
+  loadViewMode,
+  saveViewMode,
+  ViewMode,
+} from "@/lib/storage";
 import { KanbanBoard } from "@/components/KanbanBoard";
+import { TableView } from "@/components/TableView";
+import { GroupedView } from "@/components/GroupedView";
+import { ViewSwitcher } from "@/components/ViewSwitcher";
 import { ContactDetail } from "@/components/ContactDetail";
 import { NewContactModal } from "@/components/NewContactModal";
 import { Dashboard } from "@/components/Dashboard";
@@ -22,10 +31,12 @@ export default function HomePage() {
     category: "all",
     owner: "all",
   });
+  const [view, setView] = useState<ViewMode>("kanban");
 
   // Hydrate from localStorage on mount
   useEffect(() => {
     setContacts(loadContacts());
+    setView(loadViewMode());
     setHydrated(true);
   }, []);
 
@@ -33,6 +44,10 @@ export default function HomePage() {
   useEffect(() => {
     if (hydrated) saveContacts(contacts);
   }, [contacts, hydrated]);
+
+  useEffect(() => {
+    if (hydrated) saveViewMode(view);
+  }, [view, hydrated]);
 
   // Selected contact lookup
   const selected = selectedId ? contacts.find((c) => c.id === selectedId) ?? null : null;
@@ -125,22 +140,39 @@ export default function HomePage() {
         {/* Dashboard strip */}
         <Dashboard contacts={contacts} />
 
-        {/* Filters */}
-        <div className="mt-5 mb-3">
-          <FilterBar
-            filters={filters}
-            onChange={setFilters}
-            resultCount={filtered.length}
-            totalCount={contacts.length}
-          />
+        {/* Filters + view switcher */}
+        <div className="mt-5 mb-3 flex items-start gap-3 flex-wrap">
+          <div className="flex-1 min-w-0">
+            <FilterBar
+              filters={filters}
+              onChange={setFilters}
+              resultCount={filtered.length}
+              totalCount={contacts.length}
+            />
+          </div>
+          <ViewSwitcher value={view} onChange={setView} />
         </div>
 
-        {/* Kanban */}
-        <KanbanBoard
-          contacts={filtered}
-          onStatusChange={handleStatusChange}
-          onCardClick={(id) => setSelectedId(id)}
-        />
+        {/* Active view */}
+        {view === "kanban" && (
+          <KanbanBoard
+            contacts={filtered}
+            onStatusChange={handleStatusChange}
+            onCardClick={(id) => setSelectedId(id)}
+          />
+        )}
+        {view === "table" && (
+          <TableView
+            contacts={filtered}
+            onCardClick={(id) => setSelectedId(id)}
+          />
+        )}
+        {view === "grouped" && (
+          <GroupedView
+            contacts={filtered}
+            onCardClick={(id) => setSelectedId(id)}
+          />
+        )}
       </div>
 
       {/* Detail panel */}

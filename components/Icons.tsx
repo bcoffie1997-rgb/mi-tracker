@@ -95,3 +95,15 @@ export const Zap = (p: IconProps) => (
 export const SkipForward = (p: IconProps) => (
   <svg {...base(p)}><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
 );
+export const Columns = (p: IconProps) => (
+  <svg {...base(p)}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+);
+export const Rows = (p: IconProps) => (
+  <svg {...base(p)}><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+);
+export const Layers = (p: IconProps) => (
+  <svg {...base(p)}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+);
+export const ChevronRight = (p: IconProps) => (
+  <svg {...base(p)}><polyline points="9 18 15 12 9 6"/></svg>
+);
