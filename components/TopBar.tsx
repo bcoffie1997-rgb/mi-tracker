@@ -71,16 +71,17 @@ export function TopBar({ activePage, actions, onDataReplaced }: TopBarProps) {
     <>
       <header className="sticky top-0 z-30 bg-paper/85 backdrop-blur-md border-b border-ink/10">
         <div className="max-w-[1400px] mx-auto px-6 py-3.5 flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded bg-ink text-paper flex items-center justify-center serif-display text-sm font-medium">
-              MI
+          <Link href="/" className="flex items-center gap-2.5 group">
+            {/* Mindy lettermark — purple gradient, generous radius, soft glow */}
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-soft to-accent-hover flex items-center justify-center text-paper-card font-bold text-base shadow-md shadow-accent/30 group-hover:shadow-accent/40 transition-shadow">
+              M
             </div>
             <div>
-              <h1 className="serif-display text-[15px] font-medium tracking-tighter leading-none">
-                Enterprise Pipeline
+              <h1 className="serif-display text-[15px] font-bold tracking-tighter leading-none">
+                Mindy
               </h1>
               <div className="text-[10px] text-ink-muted font-mono uppercase tracking-wider mt-0.5">
-                Market Assassin · SaaS
+                Federal Pipeline Tracker
               </div>
             </div>
           </Link>

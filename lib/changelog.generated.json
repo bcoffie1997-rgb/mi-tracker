@@ -1,5 +1,19 @@
 [
   {
+    "hash": "1fc3a1e",
+    "author": "kkii",
+    "date": "2026-05-19T23:35:31-04:00",
+    "subject": "add cold-email setup guide for trymindyai.com",
+    "body": "Step-by-step checklist covering Google Workspace signup, Namecheap DNS\nrecords (MX, SPF, DKIM, DMARC), domain verification, 14-day warmup plan,\nramp schedule for the first cold sends, and operational guardrails\n(Postmaster Tools, DMARC tightening, bounce monitoring). Lives at\ndocs/EMAIL-SETUP.md so it's discoverable from the repo root.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "a9f9627",
+    "author": "kkii",
+    "date": "2026-05-19T14:28:28-04:00",
+    "subject": "add 40 backup contacts at Tier 1 organizations",
+    "body": "Researched secondary contacts at orgs where the primary lead might be\nunreachable. New entries e-180 through e-219 are Tier 2 backups sitting\nnext to their primary in the file, with notes pointing back to the\nprimary's id. Skipped orgs that already had multiple contacts (NAPEX\ncluster, WIPP, AFCEA, NACA, America's SBDC).\n\nReal-world flags surfaced during research worth a follow-up pass:\n- e-099 CBP / DMV VBOC has officially closed operations\n- e-015 Fayetteville State VBOC primary may be stale (Robin Livingston\n  now listed as Director instead of T.C. Bryant)\n- e-110 Big Sky EDA VBOC primary likely the wrong person (Justin Rigby\n  is the actual VBOC director; the seed's email mapped to the host-org\n  Interim ED)\n- e-102 MS State VBOC, e-105 WWBIC — primary name/email may be stale per\n  current staff pages\n\nTotal contacts: 179 → 219.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
     "hash": "04b5bfe",
     "author": "kkii",
     "date": "2026-05-19T10:41:06-04:00",

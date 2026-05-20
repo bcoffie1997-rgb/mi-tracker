@@ -9,8 +9,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
-        sans:    ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans:    ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         mono:    ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       // Colors are pulled from CSS variables declared in globals.css so that
