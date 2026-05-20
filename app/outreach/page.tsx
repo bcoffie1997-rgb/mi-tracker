@@ -213,6 +213,7 @@ export default function OutreachPage() {
           <QueuePanel
             items={queue}
             templates={templates}
+            senderName={senderName}
             onCompose={(req) => setCompose(req)}
           />
         )}

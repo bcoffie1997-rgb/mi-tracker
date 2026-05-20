@@ -1,5 +1,19 @@
 [
   {
+    "hash": "0a2ebee",
+    "author": "kkii",
+    "date": "2026-05-20T17:46:47-04:00",
+    "subject": "rebrand UI to Mindy (slate + purple, Inter, M lettermark, dark-first)",
+    "body": "Pulls the brand identity from getmindy.ai and applies it across the\ntracker so the internal BD tool feels native to Mindy:\n\n- Palette: indigo accent → purple-500/600/700; zinc surfaces → slate\n  (-50/100/800/900/950). CSS variables in globals.css mean every existing\n  text-ink / bg-paper-card / border-ink/10 utility re-themes automatically.\n- Display font: Geist → Inter (Mindy's font, loaded via Google Fonts CDN).\n- Lettermark: \"MI\" → \"M\" in a purple gradient with soft purple glow.\n- Wordmark: \"Enterprise Pipeline\" / \"Market Assassin · SaaS\" → \"Mindy\" /\n  \"Federal Pipeline Tracker\".\n- Page metadata: title + description + og + twitter tags rewritten to\n  match Mindy's positioning. package.json name → \"mindy-tracker\".\n- Dark-first: theme boot script now defaults to dark when no stored\n  preference and the system hasn't expressed one (Mindy's site uses\n  bg-slate-950 by default). Light mode still available via the toggle.\n- README rebranded and expanded with the new architecture (Gmail OAuth\n  setup, env vars, deployment notes).\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
+    "hash": "4d0169e",
+    "author": "kkii",
+    "date": "2026-05-20T17:46:16-04:00",
+    "subject": "wire Gmail OAuth + Send via Gmail integration",
+    "body": "New server-side routes power the connect flow and one-click sending:\n- /api/auth/google + /callback (OAuth start + token exchange, CSRF state in\n  encrypted iron-session cookie)\n- /api/auth/status returns { connected, email }\n- /api/auth/disconnect destroys the session\n- /api/email/send builds an RFC 2822 message and submits via gmail.users.\n  messages.send, returns { messageId, threadId, rfc822MessageId } for later\n  threading and reply matching\n\nClient side:\n- New GmailConnection chip on /outreach acts as Connect / Disconnect toggle\n  and surfaces \"Sending as branden@trymindyai.com\" once authorized\n- ComposeModal gets a \"Send via Gmail\" button next to the existing\n  \"Open in Gmail\" + \"Log as sent\" — disabled until connected + contact\n  has an email. On success it stores the real gmail ids on the SentMessage\n- Outreach page persists a `senderEmail` setting; gmailComposeUrl now\n  includes it as the authuser param so the Open-in-Gmail flow always\n  routes to the right Workspace account\n- Typed fetch wrapper in lib/email/api-client.ts\n\nDeps: googleapis 172, iron-session 8.\n\nRequires four env vars in .env.local (gitignored): GOOGLE_CLIENT_ID,\nGOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI, IRON_SESSION_PASSWORD.\n\nCo-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>"
+  },
+  {
     "hash": "1fc3a1e",
     "author": "kkii",
     "date": "2026-05-19T23:35:31-04:00",

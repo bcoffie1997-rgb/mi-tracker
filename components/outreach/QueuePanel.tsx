@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { QueueItem, QueueBucket } from "@/lib/email/sequence";
 import { EmailTemplate } from "@/lib/types";
-import { Send, Mail } from "@/components/Icons";
+import { renderTemplate } from "@/lib/email/templates";
+import { Send, Mail, ChevronDown } from "@/components/Icons";
 import { ComposeRequest } from "./ComposeModal";
 
 interface QueuePanelProps {
   items: QueueItem[];
   templates: EmailTemplate[];
+  senderName: string;
   onCompose: (req: ComposeRequest) => void;
 }
 
@@ -17,8 +20,18 @@ const SECTIONS: { key: QueueBucket; label: string; tone: "rust" | "gold" | "mute
   { key: "upcoming",   label: "Upcoming",  tone: "muted" },
 ];
 
-export function QueuePanel({ items, templates, onCompose }: QueuePanelProps) {
+export function QueuePanel({ items, templates, senderName, onCompose }: QueuePanelProps) {
   const tmplById = new Map(templates.map((t) => [t.id, t]));
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+  function toggle(id: string) {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
   if (items.length === 0) {
     return (
@@ -56,11 +69,15 @@ export function QueuePanel({ items, templates, onCompose }: QueuePanelProps) {
               {bucket.map((item) => {
                 const step = item.sequence.steps[item.nextStepIndex];
                 const tmpl = step ? tmplById.get(step.templateId) : undefined;
+                const isOpen = expanded.has(item.contact.id);
                 return (
                   <QueueCard
                     key={item.contact.id}
                     item={item}
                     tmpl={tmpl}
+                    senderName={senderName}
+                    isOpen={isOpen}
+                    onToggle={() => toggle(item.contact.id)}
                     onDraft={() =>
                       onCompose({
                         contactId: item.contact.id,
@@ -83,10 +100,16 @@ export function QueuePanel({ items, templates, onCompose }: QueuePanelProps) {
 function QueueCard({
   item,
   tmpl,
+  senderName,
+  isOpen,
+  onToggle,
   onDraft,
 }: {
   item: QueueItem;
   tmpl: EmailTemplate | undefined;
+  senderName: string;
+  isOpen: boolean;
+  onToggle: () => void;
   onDraft: () => void;
 }) {
   const c = item.contact;
@@ -97,37 +120,92 @@ function QueueCard({
       ? "Due today"
       : `In ${item.daysUntilDue}d`;
 
+  // Render the actual merged email only when expanded (perf: with 200+ rows
+  // we don't want to do this work on every render).
+  const merged = isOpen && tmpl
+    ? renderTemplate(tmpl, { contact: c, senderName })
+    : null;
+
   return (
-    <div className="bg-paper-card border border-ink/10 rounded-lg card-shadow px-4 py-3 flex items-center gap-4">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-[13px] font-medium text-ink truncate">
-            {c.contactName || "(no name)"}
-          </span>
-          <span className="text-[12px] text-ink-muted truncate">
-            · {c.organization}
-          </span>
+    <div className="bg-paper-card border border-ink/10 rounded-lg card-shadow overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          onClick={onToggle}
+          disabled={!tmpl}
+          className="flex items-center justify-center w-6 h-6 rounded text-ink-muted hover:text-ink hover:bg-ink/5 disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label={isOpen ? "Hide preview" : "Preview email"}
+          aria-expanded={isOpen}
+          title={tmpl ? (isOpen ? "Hide preview" : "Preview the merged email") : "No template for this step"}
+        >
+          <ChevronDown
+            size={13}
+            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-[13px] font-medium text-ink truncate">
+              {c.contactName || "(no name)"}
+            </span>
+            <span className="text-[12px] text-ink-muted truncate">
+              · {c.organization}
+            </span>
+          </div>
+          <div className="flex items-center gap-3 mt-1 text-[11px] text-ink-muted">
+            <span className="font-mono">
+              Step {item.nextStepIndex + 1}/{item.sequence.steps.length}
+            </span>
+            <span className="font-mono">·</span>
+            <span>{tmpl?.name ?? "(no template)"}</span>
+            <span className="font-mono">·</span>
+            <span className={item.daysUntilDue < 0 ? "text-rust font-medium" : ""}>
+              {dueLabel}
+            </span>
+            {!c.email && (
+              <>
+                <span className="font-mono">·</span>
+                <span className="text-rust">no email on file</span>
+              </>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3 mt-1 text-[11px] text-ink-muted">
-          <span className="font-mono">
-            Step {item.nextStepIndex + 1}/{item.sequence.steps.length}
-          </span>
-          <span className="font-mono">·</span>
-          <span>{tmpl?.name ?? "(no template)"}</span>
-          <span className="font-mono">·</span>
-          <span className={item.daysUntilDue < 0 ? "text-rust font-medium" : ""}>
-            {dueLabel}
-          </span>
-        </div>
+
+        <button
+          onClick={onDraft}
+          disabled={!tmpl}
+          className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded bg-ink text-paper hover:bg-ink/90 transition-colors font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Send size={12} />
+          Draft
+        </button>
       </div>
-      <button
-        onClick={onDraft}
-        disabled={!tmpl}
-        className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded bg-ink text-paper hover:bg-ink/90 transition-colors font-medium disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        <Send size={12} />
-        Draft
-      </button>
+
+      {/* Expanded preview — the actual subject + body that would be sent.
+          Read-only here; click Draft to make edits. */}
+      {isOpen && merged && (
+        <div className="border-t border-ink/10 bg-paper-soft/50 px-4 py-3 space-y-2">
+          <div className="flex items-baseline gap-3 text-[11px] text-ink-muted">
+            <span className="font-mono uppercase tracking-wider w-12">To</span>
+            <span className="font-mono text-ink">
+              {c.email || <span className="text-rust">no email on file</span>}
+            </span>
+          </div>
+          <div className="flex items-baseline gap-3 text-[11px] text-ink-muted">
+            <span className="font-mono uppercase tracking-wider w-12">Subj</span>
+            <span className="text-[13px] text-ink font-medium">{merged.subject}</span>
+          </div>
+          <div className="flex items-baseline gap-3 text-[11px] text-ink-muted">
+            <span className="font-mono uppercase tracking-wider w-12 pt-0.5">Body</span>
+            <pre className="text-[12px] font-mono whitespace-pre-wrap text-ink leading-relaxed flex-1 bg-paper-card border border-ink/10 rounded p-2.5">
+              {merged.body}
+            </pre>
+          </div>
+          <p className="text-[10px] font-mono uppercase tracking-wider text-ink-faint mt-1">
+            This is exactly what will send. Click Draft to edit.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
