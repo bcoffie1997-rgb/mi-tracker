@@ -15,6 +15,7 @@ const TEMPLATES_KEY = "mi-tracker:templates:v1";
 const SEQUENCES_KEY = "mi-tracker:sequences:v1";
 const MESSAGES_KEY  = "mi-tracker:messages:v1";
 const SENDER_KEY    = "mi-tracker:sender:v1";
+const SENDER_EMAIL_KEY = "mi-tracker:sender-email:v1";
 const VIEW_KEY      = "mi-tracker:view:v1";
 const SEEDED_FLAG   = "mi-tracker:seeded:v1";
 
@@ -167,6 +168,20 @@ export function loadSenderName(): string {
 export function saveSenderName(name: string): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(SENDER_KEY, name);
+}
+
+// ── Sender email (used as the `authuser` param in the Open-in-Gmail URL,
+// so the compose tab opens against the right Workspace account regardless
+// of which Google account is currently "default" in Chrome) ────────────────
+
+export function loadSenderEmail(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(SENDER_EMAIL_KEY) ?? "";
+}
+
+export function saveSenderEmail(email: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(SENDER_EMAIL_KEY, email);
 }
 
 // ── Tracking-page view mode (kanban / table / grouped) ────────────────────

@@ -52,7 +52,15 @@ export function renderTemplate(tmpl: EmailTemplate, ctx: RenderContext): Rendere
 
 // Build a Gmail compose URL — useful as the "Send" stub until OAuth is wired up.
 // Spec: https://mail.google.com/mail/?view=cm&fs=1&to=...&su=...&body=...
-export function gmailComposeUrl(args: { to: string; subject: string; body: string }): string {
+// When `senderEmail` is provided, we add `authuser=<email>` so Gmail opens
+// against that specific Workspace account instead of whichever account
+// Chrome happens to treat as "default".
+export function gmailComposeUrl(args: {
+  to: string;
+  subject: string;
+  body: string;
+  senderEmail?: string;
+}): string {
   const params = new URLSearchParams({
     view: "cm",
     fs: "1",
@@ -60,5 +68,8 @@ export function gmailComposeUrl(args: { to: string; subject: string; body: strin
     su: args.subject,
     body: args.body,
   });
+  if (args.senderEmail && args.senderEmail.trim()) {
+    params.set("authuser", args.senderEmail.trim());
+  }
   return `https://mail.google.com/mail/?${params.toString()}`;
 }

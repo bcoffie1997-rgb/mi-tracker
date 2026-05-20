@@ -18,6 +18,8 @@ import {
   saveMessages,
   loadSenderName,
   saveSenderName,
+  loadSenderEmail,
+  saveSenderEmail,
 } from "@/lib/storage";
 import { computeQueue, dueCount } from "@/lib/email/sequence";
 import { TopBar } from "@/components/TopBar";
@@ -28,6 +30,8 @@ import { InboxPanel } from "@/components/outreach/InboxPanel";
 import { TemplateEditor } from "@/components/outreach/TemplateEditor";
 import { SequenceEditor } from "@/components/outreach/SequenceEditor";
 import { ComposeModal, ComposeRequest } from "@/components/outreach/ComposeModal";
+import { GmailConnection } from "@/components/outreach/GmailConnection";
+import type { AuthStatus } from "@/lib/email/api-client";
 
 type Tab = "queue" | "sent" | "inbox" | "templates" | "sequences";
 
@@ -46,8 +50,10 @@ export default function OutreachPage() {
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [messages, setMessages]   = useState<SentMessage[]>([]);
   const [senderName, setSenderName] = useState<string>("");
+  const [senderEmail, setSenderEmail] = useState<string>("");
   const [tab, setTab] = useState<Tab>("queue");
   const [compose, setCompose] = useState<ComposeRequest | null>(null);
+  const [gmailStatus, setGmailStatus] = useState<AuthStatus>({ connected: false, email: null });
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -56,6 +62,7 @@ export default function OutreachPage() {
     setSequences(loadSequences());
     setMessages(loadMessages());
     setSenderName(loadSenderName());
+    setSenderEmail(loadSenderEmail());
     setHydrated(true);
   }, []);
 
@@ -65,6 +72,7 @@ export default function OutreachPage() {
   useEffect(() => { if (hydrated) saveSequences(sequences); }, [sequences, hydrated]);
   useEffect(() => { if (hydrated) saveMessages(messages); },   [messages, hydrated]);
   useEffect(() => { if (hydrated) saveSenderName(senderName); }, [senderName, hydrated]);
+  useEffect(() => { if (hydrated) saveSenderEmail(senderEmail); }, [senderEmail, hydrated]);
 
   const queue = useMemo(
     () => computeQueue({ contacts, messages, sequences }),
@@ -80,6 +88,7 @@ export default function OutreachPage() {
     setSequences(loadSequences());
     setMessages(loadMessages());
     setSenderName(loadSenderName());
+    setSenderEmail(loadSenderEmail());
   }
 
   if (!hydrated) {
@@ -119,17 +128,38 @@ export default function OutreachPage() {
             </p>
           </div>
 
-          {/* Sender name input — used for {{senderName}} merge field */}
-          <label className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-            Signed as
-            <input
-              type="text"
-              value={senderName}
-              onChange={(e) => setSenderName(e.target.value)}
-              placeholder="Branden"
-              className="text-[12px] font-sans normal-case tracking-normal text-ink bg-paper-card border border-ink/10 rounded px-2 py-1 w-32 focus:outline-none focus:border-accent"
+          {/* Sender identity — name powers the {{senderName}} merge field;
+              email pins the Open-in-Gmail URL to the right Workspace account.
+              The GmailConnection chip shows OAuth state and acts as the
+              Connect / Disconnect control. */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <GmailConnection
+              onChange={(s) => {
+                setGmailStatus(s);
+                if (s.email && !senderEmail) setSenderEmail(s.email);
+              }}
             />
-          </label>
+            <label className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-ink-muted">
+              Signed as
+              <input
+                type="text"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                placeholder="Branden"
+                className="text-[12px] font-sans normal-case tracking-normal text-ink bg-paper-card border border-ink/10 rounded px-2 py-1 w-32 focus:outline-none focus:border-accent"
+              />
+            </label>
+            <label className="flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-ink-muted">
+              Send from
+              <input
+                type="email"
+                value={senderEmail}
+                onChange={(e) => setSenderEmail(e.target.value)}
+                placeholder="branden@trymindyai.com"
+                className="text-[12px] font-sans normal-case tracking-normal text-ink bg-paper-card border border-ink/10 rounded px-2 py-1 w-56 focus:outline-none focus:border-accent"
+              />
+            </label>
+          </div>
         </div>
 
         {/* Outreach metrics strip */}
@@ -240,6 +270,8 @@ export default function OutreachPage() {
           sequences={sequences}
           messages={messages}
           senderName={senderName}
+          senderEmail={senderEmail}
+          gmailConnected={gmailStatus.connected}
           onClose={() => setCompose(null)}
           onLogSent={(msg, contactUpdates) => {
             setMessages((prev) => [msg, ...prev]);

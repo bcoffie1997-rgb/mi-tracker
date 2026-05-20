@@ -8,6 +8,7 @@ import {
   SentMessage,
 } from "@/lib/types";
 import { renderTemplate, gmailComposeUrl } from "@/lib/email/templates";
+import { sendEmail } from "@/lib/email/api-client";
 import { newId } from "@/lib/storage";
 import { X, Send, ArrowUpRight, Copy, Check } from "@/components/Icons";
 
@@ -25,6 +26,8 @@ interface ComposeModalProps {
   sequences: Sequence[];
   messages: SentMessage[];
   senderName: string;
+  senderEmail?: string;
+  gmailConnected?: boolean;
   onClose: () => void;
   onLogSent: (msg: SentMessage, contactUpdates: Contact | null) => void;
 }
@@ -36,6 +39,8 @@ export function ComposeModal({
   sequences,
   messages,
   senderName,
+  senderEmail,
+  gmailConnected,
   onClose,
   onLogSent,
 }: ComposeModalProps) {
@@ -46,6 +51,7 @@ export function ComposeModal({
   const [body, setBody]             = useState<string>("");
   const [didOpenGmail, setDidOpenGmail] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const contact = contacts.find((c) => c.id === contactId) ?? null;
 
@@ -93,7 +99,12 @@ export function ComposeModal({
       alert("This contact has no email address on file.");
       return;
     }
-    const url = gmailComposeUrl({ to: contact.email, subject, body });
+    const url = gmailComposeUrl({
+      to: contact.email,
+      subject,
+      body,
+      senderEmail,
+    });
     window.open(url, "_blank", "noopener,noreferrer");
     setDidOpenGmail(true);
   }
@@ -108,11 +119,12 @@ export function ComposeModal({
     }
   }
 
-  function handleLogSent() {
-    if (!contact) {
-      alert("Pick a contact before logging this as sent.");
-      return;
-    }
+  function buildSentMessage(gmailIds?: {
+    messageId: string;
+    threadId: string;
+    rfc822MessageId: string;
+  }): { msg: SentMessage; contactUpdates: Contact } | null {
+    if (!contact) return null;
     const now = new Date().toISOString();
     const msg: SentMessage = {
       id: newId("msg"),
@@ -125,8 +137,10 @@ export function ComposeModal({
       bodyPreview: body.slice(0, 200),
       sentAt: now,
       replied: false,
+      gmailMessageId: gmailIds?.messageId,
+      gmailThreadId: gmailIds?.threadId,
+      rfc822MessageId: gmailIds?.rfc822MessageId,
     };
-    // Update the contact's touch tracking
     const contactUpdates: Contact = {
       ...contact,
       lastTouch: now,
@@ -138,10 +152,59 @@ export function ComposeModal({
           : contact.status,
       updatedAt: now,
     };
-    onLogSent(msg, contactUpdates);
+    return { msg, contactUpdates };
+  }
+
+  function handleLogSent() {
+    const built = buildSentMessage();
+    if (!built) {
+      alert("Pick a contact before logging this as sent.");
+      return;
+    }
+    onLogSent(built.msg, built.contactUpdates);
+  }
+
+  // The "Send via Gmail" path — POSTs to /api/email/send, which uses the
+  // server-side OAuth client + the user's refresh token to deliver via
+  // the Gmail API. On success we record the SentMessage with the real
+  // Gmail messageId + threadId for future reply matching.
+  async function handleSendViaGmail() {
+    if (!contact?.email) {
+      alert("This contact has no email address on file.");
+      return;
+    }
+    if (sending) return;
+    setSending(true);
+    try {
+      const result = await sendEmail({
+        to: contact.email,
+        subject,
+        body,
+        fromName: senderName || undefined,
+      });
+      if (!result.ok) {
+        if (result.status === 401) {
+          alert("Gmail is not connected. Click 'Connect Gmail' on the outreach page first.");
+        } else {
+          alert(`Send failed: ${result.message}`);
+        }
+        return;
+      }
+      const built = buildSentMessage({
+        messageId: result.messageId,
+        threadId: result.threadId,
+        rfc822MessageId: result.rfc822MessageId,
+      });
+      if (built) onLogSent(built.msg, built.contactUpdates);
+    } catch (err: any) {
+      alert(`Send failed: ${err?.message ?? "Unknown error"}`);
+    } finally {
+      setSending(false);
+    }
   }
 
   const canLog = !!contact && subject.trim().length > 0 && body.trim().length > 0;
+  const canSend = canLog && !!gmailConnected && !!contact?.email && !sending;
 
   return (
     <>
@@ -278,15 +341,29 @@ export function ComposeModal({
               <button
                 onClick={handleLogSent}
                 disabled={!canLog}
+                className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded font-medium border border-ink/15 hover:bg-ink/5 text-ink disabled:opacity-40 disabled:cursor-not-allowed"
+                title={didOpenGmail ? "" : "Already sent in Gmail? Log it manually"}
+              >
+                {didOpenGmail ? "Mark as sent" : "Log as sent"}
+              </button>
+              <button
+                onClick={handleSendViaGmail}
+                disabled={!canSend}
                 className={`flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded font-medium transition-colors ${
-                  canLog
+                  canSend
                     ? "bg-ink text-paper hover:bg-ink/90"
                     : "bg-ink/20 text-paper cursor-not-allowed"
                 }`}
-                title={didOpenGmail ? "" : "Click after sending in Gmail to log this message"}
+                title={
+                  !gmailConnected
+                    ? "Connect Gmail from the outreach page first"
+                    : !contact?.email
+                    ? "Pick a contact with an email"
+                    : "Send via Gmail API"
+                }
               >
                 <Send size={12} />
-                {didOpenGmail ? "Mark as sent" : "Log as sent"}
+                {sending ? "Sending…" : "Send via Gmail"}
               </button>
             </div>
           </div>
