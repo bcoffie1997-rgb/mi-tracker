@@ -288,6 +288,44 @@ export function ComposeModal({
               </div>
             )}
 
+            {/* Research context — the notes we collected for this contact
+                during research. Surface them here so the user has the
+                intel while writing a personal opener, but it stays out of
+                the auto-merged body. */}
+            {contact && (contact.outreachHook?.trim() || contact.notes?.trim()) && (
+              <details className="bg-accent/5 border border-accent/20 rounded text-[12px] open:pb-2">
+                <summary className="cursor-pointer px-3 py-2 text-[11px] font-mono uppercase tracking-wider text-accent select-none">
+                  Research context — click to expand
+                </summary>
+                <div className="px-3 space-y-2">
+                  {contact.outreachHook?.trim() && (
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-ink-muted mb-0.5">
+                        Outreach hook
+                      </div>
+                      <p className="text-[12px] text-ink leading-relaxed">
+                        {contact.outreachHook}
+                      </p>
+                    </div>
+                  )}
+                  {contact.notes?.trim() && (
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-ink-muted mb-0.5">
+                        Notes
+                      </div>
+                      <pre className="text-[12px] font-sans whitespace-pre-wrap text-ink-soft leading-relaxed">
+                        {contact.notes}
+                      </pre>
+                    </div>
+                  )}
+                  <p className="text-[10px] text-ink-muted italic pt-1">
+                    These don&apos;t auto-merge into the email — they&apos;re for you
+                    to reference while personalizing the body above.
+                  </p>
+                </div>
+              </details>
+            )}
+
             {/* Subject + body */}
             <Field label="Subject">
               <input

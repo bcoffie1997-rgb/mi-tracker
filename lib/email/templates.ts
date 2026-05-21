@@ -33,9 +33,17 @@ export function mergeFieldValue(field: MergeField, ctx: RenderContext): string {
 const FIELD_PATTERN = /\{\{\s*([a-zA-Z]+)\s*\}\}/g;
 
 export function renderString(raw: string, ctx: RenderContext): string {
-  return raw.replace(FIELD_PATTERN, (_match, field: string) => {
+  const merged = raw.replace(FIELD_PATTERN, (_match, field: string) => {
     return mergeFieldValue(field as MergeField, ctx);
   });
+  // Collapse runs of 3+ newlines that result from an empty merge field
+  // sitting alone in a paragraph. Without this, an empty {{outreachHook}}
+  // leaves a dead blank paragraph in the body.
+  return merged
+    .replace(/\n{3,}/g, "\n\n")
+    // Also strip leading/trailing whitespace on each line to clean up any
+    // stray spaces left when a field expands to "".
+    .replace(/[ \t]+$/gm, "");
 }
 
 export interface RenderedTemplate {
